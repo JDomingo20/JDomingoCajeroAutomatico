@@ -1,4 +1,3 @@
-
 package com.JDomingoCajeroAutomatico.JDomingoCajeroAutomatico.JPA;
 
 import jakarta.persistence.Column;
@@ -8,25 +7,33 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.math.BigDecimal;
 
 @Entity
 public class Usuario {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="idusuario")
+    @Column(name = "idusuario")
     private int IdUsuario;
-    
-    @Column(name="nombre")
+
+    @Column(name = "nombre")
     private String Nombre;
-    
-    @Column(name="apellidopaterno")
+
+    @Column(name = "apellidopaterno")
     private String ApellidoPaterno;
-    
-    @Column(name="apellidomaterno")
+
+    @Column(name = "apellidomaterno")
     private String ApellidoMaterno;
-    
-    @JoinColumn(name="idrol")
+
+    @Column(name = "nip")
+    private String NIP;
+
+    @Column(name = "cantidaddisponible")
+
+    private BigDecimal CantidadDisponible;
+
+    @JoinColumn(name = "idrol")
     @ManyToOne
     public Rol rol;
 
@@ -62,6 +69,22 @@ public class Usuario {
         this.ApellidoMaterno = ApellidoMaterno;
     }
 
+    public String getNIP() {
+        return NIP;
+    }
+
+    public void setNIP(String NIP) {
+        this.NIP = NIP;
+    }
+
+    public BigDecimal getCantidadDisponible() {
+        return CantidadDisponible;
+    }
+
+    public void setCantidadDisponible(BigDecimal CantidadDisponible) {
+        this.CantidadDisponible = CantidadDisponible;
+    }
+
     public Rol getRol() {
         return rol;
     }
@@ -70,9 +93,4 @@ public class Usuario {
         this.rol = rol;
     }
 
-    
-    
-    
-    
-    
 }
