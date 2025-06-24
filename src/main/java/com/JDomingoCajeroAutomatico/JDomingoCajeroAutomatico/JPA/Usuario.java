@@ -26,12 +26,17 @@ public class Usuario {
     @Column(name = "apellidomaterno")
     private String ApellidoMaterno;
 
+    @Column(name = "username")
+    private String UserName;
+
     @Column(name = "nip")
     private String NIP;
 
     @Column(name = "cantidaddisponible")
-
     private BigDecimal CantidadDisponible;
+
+    @Column(name = "estatus")
+    private String Estaus;
 
     @JoinColumn(name = "idrol")
     @ManyToOne
@@ -69,6 +74,14 @@ public class Usuario {
         this.ApellidoMaterno = ApellidoMaterno;
     }
 
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String UserName) {
+        this.UserName = UserName;
+    }
+
     public String getNIP() {
         return NIP;
     }
@@ -83,6 +96,14 @@ public class Usuario {
 
     public void setCantidadDisponible(BigDecimal CantidadDisponible) {
         this.CantidadDisponible = CantidadDisponible;
+    }
+
+    public String getEstaus() {
+        return Estaus;
+    }
+
+    public void setEstaus(String Estaus) {
+        this.Estaus = Estaus;
     }
 
     public Rol getRol() {
