@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.math.BigDecimal;
 
 @Entity
 public class Denominacion {
@@ -21,7 +22,7 @@ public class Denominacion {
     public Moneda moneda;
     
     @Column(name = "denominacion")
-    private int Denominacion;
+    private BigDecimal Denominacion;
 
     public int getIdDenominacion() {
         return IdDenominacion;
@@ -39,12 +40,11 @@ public class Denominacion {
         this.moneda = moneda;
     }
 
-   
-    public int getDenominacion() {
+    public BigDecimal getDenominacion() {
         return Denominacion;
     }
 
-    public void setDenominacion(int Denominacion) {
+    public void setDenominacion(BigDecimal Denominacion) {
         this.Denominacion = Denominacion;
     }
     
