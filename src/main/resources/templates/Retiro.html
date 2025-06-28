@@ -15,8 +15,15 @@
                         Usuario: <strong th:text="${usuario.Nombre} + ' ' + ${usuario.ApellidoPaterno}"></strong>
                     </span>
                     <span class="navbar-text text-white">
-                        Saldo disponible: <strong th:text="${#numbers.formatCurrency(usuario.CantidadDisponible)}"></strong>
+                        Saldo disponible: 
+                        <strong th:text="${usuario.CantidadDisponible != null ? #numbers.formatCurrency(usuario.CantidadDisponible) : 'No disponible'}"></strong>
                     </span>
+
+                    <div th:if="${usuarioRol == 'Administrador'}">
+                        <form th:action="@{/Inicio/Rellenar}" method="post">
+                            <button type="submit" class="btn btn-secondary ms-3">Rellenar</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -24,10 +31,10 @@
         <div class="container mt-5">
             <h2 class="mb-4">Realizar Retiro</h2>
 
-            <!-- Mostrar mensaje de éxito o error -->
+            <!-- Mostrar el mensaje de error, si existe -->
             <div th:if="${mensaje}" class="alert alert-info" role="alert" th:text="${mensaje}"></div>
 
-            <!-- Formulario para realizar el retiro -->
+            <!-- Formulario de retiro -->
             <form th:action="@{/Inicio/Retirar}" method="post" class="mb-3">
                 <div class="mb-3">
                     <label for="cantidad" class="form-label">Cantidad a retirar</label>
@@ -37,12 +44,6 @@
                 <button type="submit" class="btn btn-primary">Retirar</button>
             </form>
 
-            <!-- Mostrar las denominaciones utilizadas -->
-            <div th:if="${denominacionesUsadas}">
-                <h3 class="mt-4">Denominaciones utilizadas:</h3>
-                <pre th:text="${denominacionesUsadas}"></pre>
-            </div>
         </div>
-
     </body>
 </html>

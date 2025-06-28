@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .logoutUrl("/logout")
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
-                .deleteCookies("JSESSIOID")
+                .deleteCookies("JSESSIONID")
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
                     response.setHeader("Pragma", "no-cache");

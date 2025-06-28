@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/Inicio")
@@ -26,15 +27,36 @@ public class UsuarioController {
     public String mostrarFormulario(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
+
+        // Esto es para guardar los reoles del usuario
+        String rol = auth.getAuthorities().stream()
+                .map(grantedAuthority -> grantedAuthority.getAuthority())
+                .findFirst()
+                .orElse("");
+
         Result resultUsuario = usuarioDAOImplementation.GetByUserName(username);
         if (resultUsuario.correct) {
             model.addAttribute("usuario", resultUsuario.object);
+            model.addAttribute("usuarioRol", rol); // Pasamos el rol al modelo
         }
         return "retiro";
     }
 
+    @PostMapping("/Rellenar")
+    public String rellenarCajero(Model model) {
+        Result result = usuarioDAOImplementation.RellenarCajero();
+
+        if (result.correct) {
+            model.addAttribute("mensaje", "Cajero rellenado con éxito.");
+        } else {
+            model.addAttribute("mensaje", "Hubo un error al rellenar el cajero: " + result.errorMessage);
+        }
+
+        return "redirect:/Inicio";
+    }
+
     @PostMapping("/Retirar")
-    public String retirarDinero(@RequestParam("cantidad") String cantidadStr, Model model) {
+    public String retirarDinero(@RequestParam("cantidad") String cantidadStr, Model model, RedirectAttributes redirectAttributes) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         Result resultUsuario = usuarioDAOImplementation.GetByUserName(username);
@@ -55,7 +77,9 @@ public class UsuarioController {
                 return "retiro";
             }
 
-            Result resultRetiro = usuarioDAOImplementation.RetirarDinero(usuario.getIdUsuario(), cantidad);
+            Result resultRetiro = usuarioDAOImplementation.RetirarDinero2(usuario.getIdUsuario(), cantidad);
+
+            System.out.println("Valor de resultRetiro.correct: " + resultRetiro.correct);
 
             if (resultRetiro.correct) {
                 Usuario usuarioActualizado = (Usuario) resultRetiro.object;
@@ -65,9 +89,12 @@ public class UsuarioController {
                 String saldoFormateado = formato.format(usuarioActualizado.getCantidadDisponible());
 
                 model.addAttribute("mensaje", "Retiro exitoso. Nuevo saldo: " + saldoFormateado);
+                redirectAttributes.addFlashAttribute("mensaje", "Retiro exitoso. Nuevo saldo: " + saldoFormateado);
             } else {
                 model.addAttribute("mensaje", "Error: " + resultRetiro.errorMessage);
                 model.addAttribute("usuario", usuario);
+                redirectAttributes.addFlashAttribute("mensaje", "Error: " + resultRetiro.errorMessage);
+                redirectAttributes.addFlashAttribute("usuario", usuario);
             }
 
         } catch (NumberFormatException ex) {
@@ -75,7 +102,7 @@ public class UsuarioController {
             model.addAttribute("usuario", usuario);
         }
 
-        return "retiro";
+        return "redirect:/Inicio";
     }
 
 }
