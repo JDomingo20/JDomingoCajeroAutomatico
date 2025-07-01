@@ -24,20 +24,13 @@ public class UsuarioController {
     private UsuarioDAOImplementation usuarioDAOImplementation;
 
     @GetMapping
-    public String mostrarFormulario(Model model) {
+    public String Index(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-
-        // Esto es para guardar los reoles del usuario
-        String rol = auth.getAuthorities().stream()
-                .map(grantedAuthority -> grantedAuthority.getAuthority())
-                .findFirst()
-                .orElse("");
 
         Result resultUsuario = usuarioDAOImplementation.GetByUserName(username);
         if (resultUsuario.correct) {
             model.addAttribute("usuario", resultUsuario.object);
-            model.addAttribute("usuarioRol", rol); // Pasamos el rol al modelo
         }
         return "retiro";
     }
@@ -79,17 +72,19 @@ public class UsuarioController {
 
             Result resultRetiro = usuarioDAOImplementation.RetirarDinero2(usuario.getIdUsuario(), cantidad);
 
-            System.out.println("Valor de resultRetiro.correct: " + resultRetiro.correct);
-
             if (resultRetiro.correct) {
                 Usuario usuarioActualizado = (Usuario) resultRetiro.object;
                 model.addAttribute("usuario", usuarioActualizado);
 
+                //Nensaje con el saldo actualizado
                 NumberFormat formato = NumberFormat.getCurrencyInstance();
                 String saldoFormateado = formato.format(usuarioActualizado.getCantidadDisponible());
-
                 model.addAttribute("mensaje", "Retiro exitoso. Nuevo saldo: " + saldoFormateado);
                 redirectAttributes.addFlashAttribute("mensaje", "Retiro exitoso. Nuevo saldo: " + saldoFormateado);
+
+                // Detalles de billete
+                model.addAttribute("billetesEntregados", resultRetiro.denominationDetails);
+                redirectAttributes.addFlashAttribute("billetesEntregados", resultRetiro.denominationDetails);
             } else {
                 model.addAttribute("mensaje", "Error: " + resultRetiro.errorMessage);
                 model.addAttribute("usuario", usuario);
@@ -100,6 +95,8 @@ public class UsuarioController {
         } catch (NumberFormatException ex) {
             model.addAttribute("mensaje", "Cantidad inválida. Asegúrese de ingresar un número válido.");
             model.addAttribute("usuario", usuario);
+            redirectAttributes.addFlashAttribute("mensaje", "Cantidad inválida. Asegúrese de ingresar un número válido.");
+            redirectAttributes.addFlashAttribute("usuario", usuario);
         }
 
         return "redirect:/Inicio";

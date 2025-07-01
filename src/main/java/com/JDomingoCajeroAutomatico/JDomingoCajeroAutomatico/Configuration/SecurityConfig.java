@@ -14,13 +14,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/Inicio").hasAnyAuthority("Cliente", "Administrador")
-                .requestMatchers("/Inicio/Rellenar").hasAuthority("Administrador")
                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -49,23 +48,23 @@ public class SecurityConfig {
                 );
         return http.build();
     }
-    
+
     @Bean
     public UserDetailsService jdbcUserDetailsService(DataSource dataSource) {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        
+
         jdbcUserDetailsManager.setUsersByUsernameQuery(
                 "SELECT UserName, NIP, Estatus FROM Usuario WHERE UserName = ?"
         );
-        
+
         jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("SELECT UserName, NombreRol FROM RolManager WHERE UserName =?");
-        
+
         return jdbcUserDetailsManager;
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-    
+
 }

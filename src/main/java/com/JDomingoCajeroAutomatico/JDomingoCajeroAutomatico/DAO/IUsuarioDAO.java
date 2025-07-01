@@ -12,8 +12,8 @@ public interface IUsuarioDAO {
     Result RetirarDinero(int IdUsuario, BigDecimal CantidadDinero);
 
     Result GetByUserName(String username);
-
-    Result RetiroCajero(CantidadMoneda cantidadMoneda, String Username, BigDecimal CantidadDinero);
     
     Result RellenarCajero();
+    
+    Result RetirarDinero2(int IdUsuario, BigDecimal CantidadDinero);
 }

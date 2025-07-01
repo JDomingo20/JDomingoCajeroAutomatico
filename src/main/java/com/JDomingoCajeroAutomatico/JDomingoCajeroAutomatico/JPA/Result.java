@@ -9,4 +9,5 @@ public class Result {
     public Exception ex; // excepciones
     public Object object; // int, string, alumno, lista<Alumno>, ARREGLO, MATRIZ 
     public List<Object> objects;
+    public List<String> denominationDetails; // Lista de detalles de los billetes entregados
 }
